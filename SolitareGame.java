@@ -33,9 +33,16 @@ public class SolitareGame {
             {
                 System.out.println("ERROR: INVALID COMMAND - \""+command+"\"");
             }
+
+            if (table.isVictory())
+            {
+                table.toString();
+                break;
+            }
                 
             
         }
+        System.out.println("GAME OVER");
         
         
     }

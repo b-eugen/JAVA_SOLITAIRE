@@ -232,5 +232,18 @@ public class Table {
 
     }
 
+    public boolean isVictory()
+    {
+        for(int ind=0; ind<Card.Suit.values().length; ind++)
+        {
+            if (!suitPiles[ind].isFull())
+            {
+                return false;
+            }
+        }
+        System.out.println("Victory!!!");
+        return true;
+    }
+
 
 }

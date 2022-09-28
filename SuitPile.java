@@ -76,5 +76,21 @@ public class SuitPile extends Pile{
         }
     }
 
+    public boolean isFull()
+    {
+        if (this.isEmpty())
+        {
+            return false;
+        }
+        else if (this.getTopCard().getValue() == Card.Value.KING)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
  
 }
