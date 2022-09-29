@@ -45,7 +45,7 @@ public class Card {
         {
             for (Card.Suit suit2 : Card.Suit.values())
             {
-                System.out.println(value2.toString()+suit2.toString());
+                // System.out.println(value2.toString()+suit2.toString());
                 if (cardString.equals(value2.toString()+suit2.toString()))
                 {
                     return true;

@@ -78,7 +78,7 @@ public class Deck extends Pile{
             return false;
         }
         int next_card = (currentCard+1)%(deckLen+1);
-        System.out.println(currentCard+" "+next_card +" "+ deckLen);
+        // System.out.println(currentCard+" "+next_card +" "+ deckLen);
 
         
         if (next_card != deckLen)
@@ -116,7 +116,7 @@ public class Deck extends Pile{
         if (this.lenPile()==0)
         {
             right = Card.cardPrintEmptyString();
-            System.out.println('1');
+            // System.out.println('1');
         }
         else if (currentCard == this.lenPile()-1)
         {

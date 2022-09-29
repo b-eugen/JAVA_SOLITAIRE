@@ -89,7 +89,7 @@ public class Pile {
     {
         for (int cardInd = 0; cardInd < this.lenPile(); cardInd++)
         {
-            System.out.println("indCardVisible: "+card + " "+cards.get(cardInd) +" "+cards.get(cardInd).isVisible());
+            // System.out.println("indCardVisible: "+card + " "+cards.get(cardInd) +" "+cards.get(cardInd).isVisible());
             if (card.getSuit() == cards.get(cardInd).getSuit() && card.getValue() == cards.get(cardInd).getValue())
             {
                 if (cards.get(cardInd).isVisible())

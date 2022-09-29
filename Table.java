@@ -77,7 +77,7 @@ public class Table {
 
     public String toString()
     {
-        return String.format("____________Table: Score: %d Number of Moves: %d_________", score, nMoves);
+        return String.format("_________________ Score: %4d | Number of Moves: %4d________________", score, nMoves);
     }
 
     public void addMove()
@@ -181,7 +181,7 @@ public class Table {
         for(int ind=0; ind<Card.Suit.values().length; ind++)
         {
             
-            System.out.println(suitPiles[ind]+" "+suit);
+            // System.out.println(suitPiles[ind]+" "+suit);
             if (suitPiles[ind].getBaseSuit().toString().equals(Character.toString(suit)))
             {
                return ind;
@@ -216,7 +216,7 @@ public class Table {
         int sPile2 = this.getPileIndex(o2);
         int i1 = o1-'0';
         int i2 = o2-'0';
-        System.out.println(sPile1 + " " + sPile2);
+        // System.out.println(sPile1 + " " + sPile2);
 
         if (sPile1 != -1 && sPile2 != -1)
         {
