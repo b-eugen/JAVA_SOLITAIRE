@@ -1,19 +1,43 @@
 package Solitare;
-//import org.apache.commons.lang3.ArrayUtils;
-import java.util.Arrays;
+/*
+ * This program is the Card class
+ * @version 1 2022-29-9
+ * @author Yevhenii Mormul
+ */
 
+import java.util.Arrays;
+/*
+ * A {@code Card} object represents a card
+ */
 public class Card {
+
+    /*
+    * A {@code Value} enum object represents a card value
+    */
     public enum Value {ACE("A"), TWO("2"), THREE("3"), FOUR("4"), FIVE("5"), SIX("6"), SEVEN("7"), EIGHT("8"), NINE("9"), TEN("10"), JACK("J"), QUEEN("Q"), KING("K");
                         private String name;
+                        /*
+                         * Constructor for the class.
+                         * @param name the equivalent string of the value (i.e. value "TEN" is represented with "10")
+                         */
                         private Value(String name)
                         {
                             this.name=name;
                         }
+
+                        /*
+                         * Returns the string representation of enum
+                         * @return name
+                         */
                         @Override
                         public String toString(){
                             return this.name;
                         }
                     };
+
+    /*
+    * A {@code Suit} enum object represents a card suit
+    */
     public enum Suit {D, H, C, S};
 
     public static final String BLACK = "\033[0m";
@@ -25,6 +49,10 @@ public class Card {
     private boolean isVisible;
 
 
+    /*
+    * Default constructor for the class.
+    * Initiates value=ACE of suit=DIAMONDS
+    */
     public Card()
     {
         this.suit = Suit.D;
@@ -32,6 +60,11 @@ public class Card {
         this.isVisible = false;
     }
 
+    /*
+    * Constructor for the class.
+    * @param suit defines the suit of the card
+    * @param value defines the value of the card
+    */
     public Card(Suit suit, Value value)
     {
         this.suit = suit;
@@ -39,32 +72,28 @@ public class Card {
         this.isVisible = false;
     }
 
-    public boolean cardFromString(String cardString)
-    {
-        for (Card.Value value2 : Card.Value.values())
-        {
-            for (Card.Suit suit2 : Card.Suit.values())
-            {
-                // System.out.println(value2.toString()+suit2.toString());
-                if (cardString.equals(value2.toString()+suit2.toString()))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
+    /*
+     * Override default to string method.
+     * @return boolean value+suit
+     */
     public String toString()
     {
         return value.toString()+suit.toString();
     }
 
+    /*
+     * Method, which returns true if card is visible, false otherwise
+     * @return boolean isVisible
+     */
     public boolean isVisible()
     {
         return  this.isVisible;
     }
 
+    /*
+     * Method, which returns true if suit of the card is red, false otherwise
+     * @return true if Hearts or Diamonds, false otherwise
+     */
     public boolean isRed()
     {
         if (this.suit == Suit.H || this.suit == Suit.D)
@@ -77,6 +106,11 @@ public class Card {
         }
     }
 
+
+    /*
+     * Method, which returns Suit[] of suits, whose color is opposite to the suit of the current card
+     * @return {C, S} if card is red, {H, D} otherwise
+     */
     public Suit[] returnOppositeSuits()
     {
         if (this.isRed())
@@ -92,19 +126,30 @@ public class Card {
         
     }
 
-
+    /*
+     * Method, which changes the status of the card to visible
+     * @return void
+     */
     public void setVisible()
     {
         this.isVisible = true;
         return;
     }
 
+    /*
+     * Method, which changes the status of the card to invisible
+     * @return void
+     */
     public void setInvisible()
     {
         this.isVisible = false;
         return;
     }
 
+    /*
+     * Method, which returns an array of strings representing the suit of the card
+     * @return String[] body of the card
+     */
     public String[] cardBody()
     {
         switch (this.suit)
@@ -133,25 +178,16 @@ public class Card {
         }
     }
 
+    /*
+     * Method, which returns a 2 line representation of the card in the form of array:
+     * ---------
+     * |VS     |
+     * where V - value
+     * S - suit
+     * @return String[] 2 top lines of the card
+     */
     public String[] cardShort()
     {
-        // String printValue;
-        // switch (this.value)
-        // {
-        //     case ACE: printValue = "A";break;
-        //     case TWO: printValue = "2";break;
-        //     case THREE: printValue = "3";break;
-        //     case FOUR: printValue = "4";break;
-        //     case FIVE: printValue = "5";break;
-        //     case SIX: printValue = "6";break;
-        //     case SEVEN: printValue = "7";break;
-        //     case EIGHT: printValue = "8";break;
-        //     case NINE: printValue = "9";break;
-        //     case TEN: printValue = "10";break;
-        //     case JACK: printValue = "J";break;
-        //     case QUEEN: printValue = "Q";break;
-        //     default: printValue = "K";break;
-        // }
         String color;
         if (this.isRed())
             color=RED;
@@ -161,7 +197,13 @@ public class Card {
         return new String[] {"--------- ", String.format("|%s%2s%s%s    | ", color, this.value.toString(), this.suit, BLACK)};
     }
 
-    public static String[] concatStrings(String[] arr1, String[] arr2)
+    /*
+     * Method which concantenates 2 arrays of strings
+     * @param arr1 - first string array
+     * @param arr2 - second string array
+     * @param return - result of array concatentations
+     */
+    public static String[] concatStringArrays(String[] arr1, String[] arr2)
     {
         String[] result = new String[arr1.length+arr2.length];
         System.arraycopy(arr1, 0, result, 0, arr1.length);
@@ -169,13 +211,18 @@ public class Card {
         return result;
     }
 
+    /*
+     * Method which returns the card in its array of strings representation
+     * @param top - boolean parameter which defines if the card is displayed fully(true) or partially(false)
+     * @return - String[] card representation
+     */
     public String[] cardPrintString(boolean top)
     {
         if (this.isVisible == true)
         {
             if (top)
             {
-                return concatStrings(this.cardShort(), this.cardBody());
+                return concatStringArrays(this.cardShort(), this.cardBody());
             }
             else
             {
@@ -204,6 +251,10 @@ public class Card {
         }
     }
 
+    /*
+     * Method which returns the empty card in its array of strings representation
+     * @return - String[] card representation
+     */
     public static String[] cardPrintEmptyString()
     {
         return new String[]{"--------- ", 
@@ -215,12 +266,19 @@ public class Card {
                             "--------- "};
     }
 
-
+    /*
+     * Method which returns the suit of the card
+     * @return - Suit
+     */
     public Card.Suit getSuit()
     {
         return this.suit;
     }
 
+    /*
+     * Method which returns the Value of the card
+     * @return - Value
+     */
     public Card.Value getValue()
     {
         return this.value;
