@@ -15,6 +15,10 @@ public class Card {
                         }
                     };
     public enum Suit {D, H, C, S};
+
+    public static final String BLACK = "\033[0;30m";
+	public static final String RED = "\033[0;31m";
+
     public static final int CARD_SIZE = 7;
     private Value value;
     private Suit suit;
@@ -148,8 +152,13 @@ public class Card {
         //     case QUEEN: printValue = "Q";break;
         //     default: printValue = "K";break;
         // }
-        
-        return new String[] {"--------- ", String.format("|%2s%s    | ", this.value.toString(), this.suit)};
+        String color;
+        if (this.isRed())
+            color=RED;
+        else
+            color=BLACK;
+
+        return new String[] {"--------- ", String.format("|%s%2s%s%s    | ", color, this.value.toString(), this.suit, BLACK)};
     }
 
     public static String[] concatStrings(String[] arr1, String[] arr2)
