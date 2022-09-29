@@ -13,12 +13,13 @@ public class SolitareGame {
         outerloop:
         while (true)
         {
-            table.toString();
+            table.printOut();
             System.out.println("\nPlease enter your command: ");
             command = in.nextLine();
             if (command.equals("D"))
             {
-                table.deckGetNext(); 
+                if (table.deckGetNext())
+                    table.addMove();; 
             }
             else if (command.equals("Q"))
             {
@@ -26,8 +27,10 @@ public class SolitareGame {
             }
             else if (command.matches("[1234567DHCSP][1234567DHCS]"))
             {
-                System.out.println("Valid command");
+                // System.out.println("Valid command");
                 table.moveCards(command.charAt(0), command.charAt(1));
+                // if (table.deckGetNext())
+                //     table.addMove();;
             }
             else
             {
@@ -36,7 +39,7 @@ public class SolitareGame {
 
             if (table.isVictory())
             {
-                table.toString();
+                table.printOut();
                 break;
             }
                 

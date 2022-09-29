@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Column extends Pile{
     private int number;
+    
 
     public Column()
     {
@@ -141,7 +142,6 @@ public class Column extends Pile{
         else
         {
             Card card = c2.getCard(c2.lenPile()-1);
-            System.out.println("card "+card);
             if (card.getValue() == Card.Value.ACE)
             {
                 System.out.println("Failed to move cards from "+this.number+" to "+c2.number + ". You are not allowed to append anything to column with tailing ace");
@@ -152,9 +152,7 @@ public class Column extends Pile{
             for (Card.Suit suit: card.returnOppositeSuits())
             {
                 Card card2 = new Card(suit, Card.Value.values()[card.getValue().ordinal()-1]);
-                System.out.println("card2 "+card2);
                 ind = this.indCardVisible(card2);
-                System.out.println("ind "+ind);
                 if (ind != -1)
                 {
                     c2.addSlice(this.getSlice(ind));
@@ -211,7 +209,12 @@ public class Column extends Pile{
     {
         if (this.lenPile() > 1)
         {
-            this.getCard(this.lenPile()-2).setVisible();
+            if (this.getCard(this.lenPile()-2).isVisible()==false)
+            {
+                this.getCard(this.lenPile()-2).setVisible();
+                this.cardRevealed();
+            }
+            
         }
         return super.popTopCard();
     }

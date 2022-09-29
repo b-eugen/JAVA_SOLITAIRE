@@ -4,20 +4,24 @@ import java.util.ArrayList;
 public class Pile {
     // private boolean isEmpty;
     private ArrayList<Card> cards;
+    private boolean cardReveal;
 
     public Pile()
     {
         this.cards = new ArrayList<Card>();
+        cardReveal = false;
     }
 
     public Pile(ArrayList<Card> cards)
     {
         this.cards = cards;
+        cardReveal = false;
     }
 
     public Pile(Pile pile)
     {
         this.cards = pile.cards;
+        cardReveal = false;
     }
 
     public boolean isEmpty()
@@ -106,10 +110,30 @@ public class Pile {
             this.cards.subList(ind, this.lenPile()).clear();
             if (this.lenPile() > 0)
             {
-                this.getCard(ind-1).setVisible();
+                if (this.getCard(ind-1).isVisible()==false)
+                {
+                    this.getCard(ind-1).setVisible();
+                    cardReveal = true;
+                }
+                
             }
         }
         return returnCards;
+    }
+
+    public boolean isCardRevealed()
+    {
+        return cardReveal;
+    }
+
+    public void cardRevealed()
+    {
+        cardReveal=true;
+    }
+
+    public void cardNotRevealed()
+    {
+        cardReveal=false;
     }
 
     public boolean addSlice(ArrayList<Card> cards)

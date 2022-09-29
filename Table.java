@@ -16,12 +16,21 @@ public class Table {
 
     public final static int N_COLUMNS = 7;
     
+    public final static int ADD_TO_SUIT_PILE = 10;
+    public final static int CARD_REVEAL = 5;
+    public final static int CARD_FROM_DECK = 5;
+
     private Deck deck;
     private Column[] columns;
     private SuitPile[] suitPiles;
+    private int nMoves;
+    private int score;
 
+    
     public Table()
     {
+        nMoves = 0;
+        score=0;
         
         columns = new Column[N_COLUMNS];
         int nValues = Card.Value.values().length;
@@ -68,6 +77,18 @@ public class Table {
 
     public String toString()
     {
+        return String.format("____________Table: Score: %d Number of Moves: %d_________", score, nMoves);
+    }
+
+    public void addMove()
+    {
+        nMoves++;
+    }
+
+    public void printOut()
+    {
+        System.out.println(toString());
+
         String[] output = new String[256];
         for(int ind=0; ind<256; ind++)
             output[ind] = "";
@@ -136,9 +157,10 @@ public class Table {
         }
 
 
-        return "";
+        return;
     }
 
+    
     public boolean deckGetNext()
     {
         boolean result = deck.getNext();
@@ -203,25 +225,65 @@ public class Table {
         }
         else if (o1 == 'P' && sPile2 != -1)
         {
-            return move(deck, suitPiles[sPile2]);
+            boolean result = move(deck, suitPiles[sPile2]);
+            if (result)
+            {
+                this.addMove();
+                score+=ADD_TO_SUIT_PILE+CARD_FROM_DECK;
+            }
+            return result;
         }
         else if (o1 == 'P')
         {
-            return move(deck, columns[i2-1]);
+            boolean result = move(deck, columns[i2-1]);
+            if (result)
+            {
+                this.addMove();
+                score+=CARD_FROM_DECK;
+            }
+            return result;
         }
         else if(sPile1 != -1)
         {
-            // return this.moveSuitToColumn(i2-1, sPile1);
-            return move(suitPiles[sPile1], columns[i2-1]);
+            boolean result = move(suitPiles[sPile1], columns[i2-1]);
+            if (result)
+            {
+                this.addMove();
+                score-=ADD_TO_SUIT_PILE;
+            }
+            return result;
         }
         else if(sPile2 != -1)
         {
-            return move(columns[i1-1], suitPiles[sPile2]);
-            //return this.moveColumnToSuit(i1-1, sPile2);
+            boolean result= move(columns[i1-1], suitPiles[sPile2]);
+            if (result)
+            {
+                this.addMove();
+                score+=ADD_TO_SUIT_PILE;
+                if (columns[i1-1].isCardRevealed())
+                {
+                    score+=CARD_REVEAL;
+                    columns[i1-1].cardNotRevealed();
+                }
+            }
+            
+            return result;
         }
         else
         {
-            return columns[i1-1].moveToColumn(columns[i2-1]);
+            boolean result= columns[i1-1].moveToColumn(columns[i2-1]);
+
+            if (result)
+            {
+                this.addMove();
+                if (columns[i1-1].isCardRevealed())
+                {
+                    score+=CARD_REVEAL;
+                    columns[i1-1].cardNotRevealed();
+                }
+            }
+                            
+            return result;
         }
         
 

@@ -16,7 +16,7 @@ public class Card {
                     };
     public enum Suit {D, H, C, S};
 
-    public static final String BLACK = "\033[0;30m";
+    public static final String BLACK = "\033[0m";
 	public static final String RED = "\033[0;31m";
 
     public static final int CARD_SIZE = 7;
@@ -110,19 +110,19 @@ public class Card {
         switch (this.suit)
         {
             
-            case D:    return new String[] {"|   /\\  | ",
-                                            "|  /  \\ | ",
-                                            "|  \\  / | ",
-                                            "|   \\/  | ",
+            case D:    return new String[] {"|"+RED+"   /\\  "+BLACK+"| ",
+                                            "|"+RED+"  /  \\ "+BLACK+"| ",
+                                            "|"+RED+"  \\  / "+BLACK+"| ",
+                                            "|"+RED+"   \\/  "+BLACK+"| ",
                                             "--------- "};
             case C:    return new String[] {"|   0   | ",
                                             "|  0-0  | ",
                                             "|  / \\  | ",
                                             "|       | ",
                                             "--------- "};
-            case H:    return new String[] {"|  /\\/\\ | ",
-                                            "|  \\  / | ",
-                                            "|   \\/  | ",
+            case H:    return new String[] {"|"+RED+"  /\\/\\ "+BLACK+"| ",
+                                            "|"+RED+"  \\  / "+BLACK+"| ",
+                                            "|"+RED+"   \\/  "+BLACK+"| ",
                                             "|       | ",
                                             "--------- "};
             default:   return new String[] {"|   /\\  | ",

@@ -68,7 +68,12 @@ public class SuitPile extends Pile{
         if (this.isEmpty())
         {
             Card card = new Card(this.baseSuit, Card.Value.ACE);
-            return Card.concatStrings(new String[] {"--------- ", String.format("|%s      | ", this.baseSuit)}, card.cardBody());
+            String color;
+            if (card.isRed())
+                color=Card.RED;
+            else
+                color=Card.BLACK;
+            return Card.concatStrings(new String[] {"--------- ", String.format("|%s%s%s      | ",color, this.baseSuit, Card.BLACK)}, card.cardBody());
         }
         else
         {
