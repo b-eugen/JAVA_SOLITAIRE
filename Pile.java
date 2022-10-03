@@ -1,4 +1,4 @@
-package Solitare;
+package Solitaire;
 /*
  * This program is the Pile class
  * @version 1 2022-29-9
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public abstract class Pile {
     // private boolean isEmpty;
     private ArrayList<Card> cards;
-    private boolean cardReveal;
 
     /*
     * Default constructor for the class.
@@ -21,7 +20,6 @@ public abstract class Pile {
     public Pile()
     {
         this.cards = new ArrayList<Card>();
-        cardReveal = false;
     }
 
 
@@ -33,7 +31,6 @@ public abstract class Pile {
     public Pile(ArrayList<Card> cards)
     {
         this.cards = cards;
-        cardReveal = false;
     }
 
     /*
@@ -44,7 +41,6 @@ public abstract class Pile {
     public Pile(Pile pile)
     {
         this.cards = pile.cards;
-        cardReveal = false;
     }
 
     /*
@@ -147,17 +143,17 @@ public abstract class Pile {
      */
     public int indCardVisible(Card card)
     {
+        int resultCardInd = -1;
         for (int cardInd = 0; cardInd < this.lenPile(); cardInd++)
         {
             if (card.getSuit() == cards.get(cardInd).getSuit() && card.getValue() == cards.get(cardInd).getValue())
             {
                 if (cards.get(cardInd).isVisible())
-                    return cardInd;
-                else
-                    break;
+                    resultCardInd=cardInd;
+                break;
             }
         }
-        return -1;
+        return resultCardInd;
     }
 
     /*
@@ -177,37 +173,10 @@ public abstract class Pile {
                 if (this.getCard(ind-1).isVisible()==false)
                 {
                     this.getCard(ind-1).setVisible();
-                    cardReveal = true;
                 }
-                
             }
         }
         return returnCards;
-    }
-
-    /*
-     * Method which checks if card has been reveled
-     * @return true if card was revealed, else false
-     */
-    public boolean isCardRevealed()
-    {
-        return cardReveal;
-    }
-
-    /*
-     * Method which change the card revealed status to true
-     */
-    public void cardRevealed()
-    {
-        cardReveal=true;
-    }
-
-    /*
-     * Method which change the card revealed status to false
-     */
-    public void cardNotRevealed()
-    {
-        cardReveal=false;
     }
 
     /*

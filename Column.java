@@ -1,4 +1,4 @@
-package Solitare;
+package Solitaire;
 
 /*
  * This program is the Column class
@@ -121,18 +121,18 @@ public class Column extends Pile{
         int lenColumn = this.lenPile();
         if (lenColumn == 0)//display empty plceholder if there are no cards in the column
         {
-            return Card.concatStringArrays( output, Card.cardPrintEmptyString());
+            return Card.concatStringArrays( output, Card.stringCardEmpty());
         }
 
         for (int ind=0; ind<lenColumn; ind++)//else display all cards
         {
             if (ind<lenColumn-1)//if card is not the top, go for short format
             {
-                output = Card.concatStringArrays( output, this.getCard(ind).cardPrintString(false));
+                output = Card.concatStringArrays( output, this.getCard(ind).stringCardShort());
             }
             else//top card is displayed in the long format
             {
-                output = Card.concatStringArrays( output, this.getCard(ind).cardPrintString(true));
+                output = Card.concatStringArrays( output, this.getCard(ind).stringCardLong());
             }
         }
         return output;
@@ -175,46 +175,57 @@ public class Column extends Pile{
      * @param c2 - target column
      * @return boolean - true if successful
      */
-    public boolean moveToColumn(Column c2)
+    public int moveToColumn(Column destination)
     {
         int ind = -1;
-        if (c2.isEmpty())//if target is empty, move is legal only if this column has an KING card, which is visible
+        int numberCardsMoved = 0;
+        if (destination.isEmpty())//if target is empty, move is legal only if this column has an KING card, which is visible
         {
-            
             for (Card.Suit suit: Card.Suit.values())
             {
                 ind = this.indCardVisible(new Card(suit, Card.Value.KING));
-                if (ind != -1)//if there is at least 1 visible KING get all cards starting from KING's index and move them to the c2
+                if (ind != -1)
                 {
-                    c2.addSlice(this.popSlice(ind));
-                    return true;
+                    break;
                 }
             }
-   
         }
         else//target is not empty
         {
-            Card card = c2.getCard(c2.lenPile()-1);//get top card of the target
+            Card card = destination.getCard(destination.lenPile()-1);//get top card of the target
             if (card.getValue() == Card.Value.ACE)//if target ends with ace report an error
             {
-                System.out.println(Card.RED+"Failed to move cards from "+this.number+" to "+c2.number + ". You are not allowed to append anything to column with tailing ace"+Card.BLACK);
-                return false;
+                System.out.println(Card.RED+"Failed to move cards from "+this.number+" to "+destination.number + ". You are not allowed to append anything to column with tailing ace"+Card.BLACK);
             }
-
-            for (Card.Suit suit: card.returnOppositeSuits())//loop through oposite suits of the card
+            else
             {
-                Card card2 = new Card(suit, Card.Value.values()[card.getValue().ordinal()-1]);//instanciate a card whose value is smaller by 1 unit than the value of the c2 top card, with oposite suit
-                ind = this.indCardVisible(card2);
-                if (ind != -1)//if card2 is in source column get a legal slice and move it
+                for (Card.Suit suit: card.returnOppositeSuits())//loop through oposite suits of the card
                 {
-                    c2.addSlice(this.popSlice(ind));
-                    return true;
+                    Card card2 = new Card(suit, Card.Value.values()[card.getValue().ordinal()-1]);//instanciate a card whose value is smaller by 1 unit than the value of the destination top card, with oposite suit
+                    ind = this.indCardVisible(card2);
+                    if (ind != -1)
+                    {
+                        break;
+                    }
                 }
             }
         }
-        //if the move is illegal report an error
-        System.out.println(Card.RED+"Failed to move cards from "+this.number+" to "+c2.number+Card.BLACK);
-        return false;
+
+        if (ind != -1)//move cards if ind is not -1
+        {
+            int length = this.lenPile();
+            if (destination.addSlice(this.popSlice(ind)))
+            {
+                numberCardsMoved=length-ind;
+            }
+        }
+        else
+        {
+            //if the move is illegal report an error
+            System.out.println(Card.RED+"Failed to move cards from "+this.number+" to "+destination.number+Card.BLACK);
+        }
+        
+        return numberCardsMoved;
     }
 
      /*
@@ -267,7 +278,6 @@ public class Column extends Pile{
             if (this.getCard(this.lenPile()-2).isVisible()==false)
             {
                 this.getCard(this.lenPile()-2).setVisible();
-                this.cardRevealed();
             }
             
         }

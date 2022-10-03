@@ -1,4 +1,4 @@
-package Solitare;
+package Solitaire;
 
 /*
  * This program is the Table class
@@ -18,9 +18,9 @@ public class Table {
 
     public final static int N_COLUMNS = 7;
     
-    public final static int ADD_TO_SUIT_PILE = 10;
-    public final static int CARD_REVEAL = 5;
-    public final static int CARD_FROM_DECK = 5;
+    public final static int COLUMN_TO_SUITS = 20;
+    public final static int COLUMN_TO_COLUMN = 5;
+    public final static int DECK_TO_SUITS = 10;
 
     private Deck deck;
     private Column[] columns;
@@ -91,7 +91,7 @@ public class Table {
      */
     public String toString()
     {
-        return String.format("_________________ Score: %4d | Number of Moves: %4d________________", score, nMoves);
+        return String.format("\n_________________ Score: %4d | Number of Moves: %4d________________\n", score, nMoves);
     }
 
     /*
@@ -110,11 +110,13 @@ public class Table {
         System.out.println(toString());
 
         //initiate output array of strings
-        String[] output = new String[256];
-        for(int ind=0; ind<256; ind++)
+        int N_ROWS = 256;
+
+        String[] output = new String[N_ROWS];
+        for(int ind=0; ind<N_ROWS; ind++)
             output[ind] = "";
 
-        int firstRow = Card.CARD_SIZE;
+        int firstRow = Card.CARD_SIZE+1;
 
         //add SuitPiles to output horizontally
         for(int ind=0; ind<Card.Suit.values().length; ind++)
@@ -189,12 +191,16 @@ public class Table {
      * Method that gets the next card from the deck
      * @return - true if successful
      */
-    public boolean deckGetNext()
+    public boolean getNextCardFromDeck()
     {
         boolean result = deck.getNext();
         if (!result)
         {
             System.out.println(Card.RED+"Failed to get a card from the deck, length of deck is 0"+Card.BLACK);
+        }
+        else
+        {
+            this.addMove();
         }
         return result;
     }
@@ -218,24 +224,24 @@ public class Table {
     
     /*
      * Method that move cards between 2 piles
-     * @param p1 - Pile source pile
-     * @param p2 - Pile target pile
+     * @param source - Pile source pile
+     * @param destination - Pile target pile
      * @return -true if successful
      */
-    public boolean move(Pile p1, Pile p2)
+    public boolean moveCards(Pile source, Pile destination)
     {
-        if (!p1.isEmpty())
+        if (!source.isEmpty())
         {
-            Card card = p1.getTopCard();
-            if (p2.addCard(card))
+            Card card = source.getTopCard();
+            if (destination.addCard(card))
             {
-                p1.popTopCard();
+                source.popTopCard();
                 return true;
             }
         }
         else
         {
-            System.out.println(Card.RED+"Failed to get a card from Suit Pile " + p1.toString() + " because it is empty"+Card.BLACK);
+            System.out.println(Card.RED+"Failed to get a card from Suit Pile " + source.toString() + " because it is empty"+Card.BLACK);
         }
         return false;
     }
@@ -246,80 +252,62 @@ public class Table {
      * @param o2 - char target ([1-7] = column number, [DHCS]=suit piles (diamonds, hearts, clubs, spades))
      * @return true if successful
      */
-    public boolean moveCards(char o1, char o2)
+    public boolean moveCardsFromInput(char o1, char o2)
     {
         int sPile1 = this.getPileIndex(o1);//attempt to get the source suit pile index
         int sPile2 = this.getPileIndex(o2);//attempt to get the target suit pile index
         int i1 = o1-'0';//attempt to get the source coloumn index
         int i2 = o2-'0';//attempt to get the source coloumn index
-
+        boolean result = false;
         if (sPile1 != -1 && sPile2 != -1)//cannot move cards between piles
         {
             System.out.println(Card.RED+"Error: cannot move from pile "+suitPiles[sPile1]+ " to "+suitPiles[sPile2]+Card.BLACK);
-            return false;
         }
         else if (o1 == 'P' && sPile2 != -1)//move from deck to pile
         {
-            boolean result = move(deck, suitPiles[sPile2]);
+            result = moveCards(deck, suitPiles[sPile2]);
             if (result)
             {
                 this.addMove();
-                score+=ADD_TO_SUIT_PILE+CARD_FROM_DECK;
+                score+=DECK_TO_SUITS;
             }
-            return result;
         }
         else if (o1 == 'P')//move from deck to column
         {
-            boolean result = move(deck, columns[i2-1]);
+            result = moveCards(deck, columns[i2-1]);
             if (result)
             {
                 this.addMove();
-                score+=CARD_FROM_DECK;
             }
-            return result;
         }
         else if(sPile1 != -1)//move from suit pile to column
         {
-            boolean result = move(suitPiles[sPile1], columns[i2-1]);
+            result = moveCards(suitPiles[sPile1], columns[i2-1]);
             if (result)
             {
                 this.addMove();
-                score-=ADD_TO_SUIT_PILE;
             }
-            return result;
         }
         else if(sPile2 != -1)//move from column to suit pile
         {
-            boolean result= move(columns[i1-1], suitPiles[sPile2]);
+            result= moveCards(columns[i1-1], suitPiles[sPile2]);
             if (result)
             {
                 this.addMove();
-                score+=ADD_TO_SUIT_PILE;
-                if (columns[i1-1].isCardRevealed())
-                {
-                    score+=CARD_REVEAL;
-                    columns[i1-1].cardNotRevealed();
-                }
-            }
-            
-            return result;
+                this.score += COLUMN_TO_SUITS;
+            }            
         }
         else//move cards between columns
         {
-            boolean result= columns[i1-1].moveToColumn(columns[i2-1]);
-
-            if (result)
+            int num_cards = columns[i1-1].moveToColumn(columns[i2-1]);
+            if (num_cards>0)
             {
                 this.addMove();
-                if (columns[i1-1].isCardRevealed())
-                {
-                    score+=CARD_REVEAL;
-                    columns[i1-1].cardNotRevealed();
-                }
+                result = true;
+                this.score += COLUMN_TO_COLUMN*num_cards;
             }
-                            
-            return result;
         }
+        return result;
         
     }
 

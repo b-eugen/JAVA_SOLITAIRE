@@ -1,4 +1,4 @@
-package Solitare;
+package Solitaire;
 
 /*
  * This program is the Deck class
@@ -146,32 +146,33 @@ public class Deck extends Pile{
     {
         String[] left = new String[Card.CARD_SIZE];//left card/placeholder
         String[] right = new String[Card.CARD_SIZE];//right card/placeholder
-        String[] result = new String[Card.CARD_SIZE];//resulting deck
-
+        String[] result = new String[Card.CARD_SIZE+1];//resulting deck
+        result[0] = "P";
+        
         if (currentCard==this.lenPile())//if no card is drawn
         {
-            left = Card.cardPrintEmptyString();//get placeholder
+            left = Card.stringCardEmpty();//get placeholder
         }
         else
         {
             Card card = this.getCard(currentCard);//get the drawn card
-            left = card.cardPrintString(true);//get the card in String[] representation
+            left = card.stringCardLong();//get the card in String[] representation
         }
 
         if ((this.lenPile()==0) || (currentCard == this.lenPile()-1))//if there are no more cards left in deck
         {
-            right = Card.cardPrintEmptyString();
+            right = Card.stringCardEmpty();
         }
         else //if there are cards in the deck, show the card face down
         {
             Card temp = new Card();
-            right = temp.cardPrintString(true);
+            right = temp.stringCardLong();
         }
 
         //merge 2 arraylists horizontally
         for(int index = 0; index<Card.CARD_SIZE; index++)
         {
-            result[index] = left[index]+right[index];
+            result[index+1] = left[index]+right[index];
         }
 
         return result;

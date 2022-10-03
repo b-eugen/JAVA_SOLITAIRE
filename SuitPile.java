@@ -1,4 +1,4 @@
-package Solitare;
+package Solitaire;
 
 /*
  * This program is the SuitPile class
@@ -97,16 +97,13 @@ public class SuitPile extends Pile{
         if (this.isEmpty())//If empty return a placeholder with the given suit
         {
             Card card = new Card(this.baseSuit, Card.Value.ACE);
-            String color;
-            if (card.isRed())
-                color=Card.RED;
-            else
-                color=Card.BLACK;
-            return Card.concatStringArrays(new String[] {"--------- ", String.format("|%s%s%s      | ",color, this.baseSuit, Card.BLACK)}, card.cardBody());
+            return card.stringCardToken();
         }
         else//if not empty return the top level card string representation
         {
-            return this.getCard(this.lenPile()-1).cardPrintString(true);
+            Card card = this.getCard(this.lenPile()-1);
+                
+            return Card.concatStringArrays(new String[] {String.format("%s%s%s         ",card.getColor(), card.getSuit(), Card.BLACK)}, card.stringCardLong());
         }
     }
 

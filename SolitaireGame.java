@@ -1,4 +1,4 @@
-package Solitare;
+package Solitaire;
 
 /*
  * This program is the SolitaireGame class
@@ -31,8 +31,7 @@ public class SolitaireGame {
             command = in.nextLine();
             if (command.equals("D")) //user wants to draw a card from the deck
             {
-                if (table.deckGetNext())
-                    table.addMove();; 
+                table.getNextCardFromDeck();
             }
             else if (command.equals("Q")) //user quits the game
             {
@@ -40,7 +39,7 @@ public class SolitaireGame {
             }
             else if (command.matches("[1234567DHCSP][1234567DHCS]")) // user wants to move cards
             {
-                table.moveCards(command.charAt(0), command.charAt(1));
+                table.moveCardsFromInput(command.charAt(0), command.charAt(1));
             }
             else //invalid command
             {

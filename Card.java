@@ -1,4 +1,4 @@
-package Solitare;
+package Solitaire;
 /*
  * This program is the Card class
  * @version 1 2022-29-9
@@ -40,10 +40,10 @@ public class Card {
     */
     public enum Suit {D, H, C, S};
 
-    public static final String BLACK = "\033[0m";
-	public static final String RED = "\033[0;31m";
+    public static final String BLACK = "\033[0m";//black unicode color
+	public static final String RED = "\033[0;31m";//red unicode color
 
-    public static final int CARD_SIZE = 7;
+    public static final int CARD_SIZE = 7;//dimention of the full card
     private Value value;
     private Suit suit;
     private boolean isVisible;
@@ -106,6 +106,22 @@ public class Card {
         }
     }
 
+    /*
+     * Method, which returns unicode representation of suit color
+     * @return Card.RED if Hearts or Diamonds, Card.BLACK otherwise
+     */
+    public String getColor()
+    {
+        if (this.isRed())
+        {
+            return Card.RED;
+        }
+        else
+        {
+            return Card.BLACK;
+        }
+    }
+
 
     /*
      * Method, which returns Suit[] of suits, whose color is opposite to the suit of the current card
@@ -115,15 +131,12 @@ public class Card {
     {
         if (this.isRed())
         {
-            Suit[] suits={Suit.C, Suit.S};
-            return  suits;
+            return new Suit[] {Suit.C, Suit.S};
         }
         else
         {
-            Suit[] suits={Suit.H, Suit.D};
-            return  suits;
-        }
-        
+            return new Suit[] {Suit.H, Suit.D};
+        }   
     }
 
     /*
@@ -150,7 +163,7 @@ public class Card {
      * Method, which returns an array of strings representing the suit of the card
      * @return String[] body of the card
      */
-    public String[] cardBody()
+    public String[] stringCardBody()
     {
         switch (this.suit)
         {
@@ -186,68 +199,53 @@ public class Card {
      * S - suit
      * @return String[] 2 top lines of the card
      */
-    public String[] cardShort()
+    public String[] stringCardShort()
     {
-        String color;
-        if (this.isRed())
-            color=RED;
+        if (this.isVisible)
+        {
+            return new String[] {"--------- ", String.format("|%s%2s%s%s    | ", this.getColor(), this.value.toString(), this.suit, BLACK)};
+        }
         else
-            color=BLACK;
-
-        return new String[] {"--------- ", String.format("|%s%2s%s%s    | ", color, this.value.toString(), this.suit, BLACK)};
+        {
+            return new String[] {"--------- ", 
+                                 "|XXXXXXX| ",};
+        }
+            
     }
 
     /*
      * Method which concantenates 2 arrays of strings
-     * @param arr1 - first string array
-     * @param arr2 - second string array
-     * @param return - result of array concatentations
+     * @param base - first string array
+     * @param appendable - second string array
+     * @return - result of array concatentations
      */
-    public static String[] concatStringArrays(String[] arr1, String[] arr2)
+    public static String[] concatStringArrays(String[] base, String[] appendable)
     {
-        String[] result = new String[arr1.length+arr2.length];
-        System.arraycopy(arr1, 0, result, 0, arr1.length);
-        System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
+        String[] result = new String[base.length+appendable.length];
+        System.arraycopy(base, 0, result, 0, base.length);
+        System.arraycopy(appendable, 0, result, base.length, appendable.length);
         return result;
     }
 
     /*
      * Method which returns the card in its array of strings representation
-     * @param top - boolean parameter which defines if the card is displayed fully(true) or partially(false)
      * @return - String[] card representation
      */
-    public String[] cardPrintString(boolean top)
+    public String[] stringCardLong()
     {
         if (this.isVisible == true)
         {
-            if (top)
-            {
-                return concatStringArrays(this.cardShort(), this.cardBody());
-            }
-            else
-            {
-                return this.cardShort();
-            }
+            return concatStringArrays(this.stringCardShort(), this.stringCardBody());
         }
         else
         { 
-            if (top)
-            {
-                return new String[] {"--------- ", 
-                                     "|XXXXXXX| ",
-                                     "|XXXXXXX| ",
-                                     "|XXXXXXX| ",
-                                     "|XXXXXXX| ",
-                                     "|XXXXXXX| ",
-                                     "--------- "};
-            }
-            else
-            {
-                return new String[] {"--------- ", 
-                                     "|XXXXXXX| ",};
-            }
-            
-                
+            return new String[] {"--------- ", 
+                                "|XXXXXXX| ",
+                                "|XXXXXXX| ",
+                                "|XXXXXXX| ",
+                                "|XXXXXXX| ",
+                                "|XXXXXXX| ",
+                                "--------- "};
         }
     }
 
@@ -255,7 +253,7 @@ public class Card {
      * Method which returns the empty card in its array of strings representation
      * @return - String[] card representation
      */
-    public static String[] cardPrintEmptyString()
+    public static String[] stringCardEmpty()
     {
         return new String[]{"--------- ", 
                             "|       | ",
@@ -264,6 +262,16 @@ public class Card {
                             "|       | ",
                             "|       | ",
                             "--------- "};
+    }
+
+    /*
+     * Method which returns the empty card with a particular suit in its array of strings representation
+     * @return - String[] card representation
+     */
+    public String[] stringCardToken()
+    {
+        String color= this.getColor();
+        return Card.concatStringArrays(new String[] {String.format("%s%s%s         ",color, this.suit, Card.BLACK), "--------- ", String.format("|%s%s%s      | ",color, this.suit, Card.BLACK)}, this.stringCardBody());
     }
 
     /*
