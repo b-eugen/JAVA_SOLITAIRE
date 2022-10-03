@@ -196,7 +196,7 @@ public class Table {
         boolean result = deck.getNext();
         if (!result)
         {
-            System.out.println(Card.RED+"Failed to get a card from the deck, length of deck is 0"+Card.BLACK);
+            System.out.println(Card.RED+"Table.getNextCardFromDeck Error: Invalid play, failed to get a card from the deck, length of deck is 0"+Card.BLACK);
         }
         else
         {
@@ -241,7 +241,7 @@ public class Table {
         }
         else
         {
-            System.out.println(Card.RED+"Failed to get a card from Suit Pile " + source.toString() + " because it is empty"+Card.BLACK);
+            System.out.println(Card.RED+"Table.moveCards Error: Invalid play, failed to get a card from Pile " + source.toString() + " because it is empty"+Card.BLACK);
         }
         return false;
     }
@@ -261,7 +261,7 @@ public class Table {
         boolean result = false;
         if (sPile1 != -1 && sPile2 != -1)//cannot move cards between piles
         {
-            System.out.println(Card.RED+"Error: cannot move from pile "+suitPiles[sPile1]+ " to "+suitPiles[sPile2]+Card.BLACK);
+            System.out.println(Card.RED+"Table.moveCards Error: Invalid play, cannot move from suit pile "+suitPiles[sPile1]+ " to "+suitPiles[sPile2]+Card.BLACK);
         }
         else if (o1 == 'P' && sPile2 != -1)//move from deck to pile
         {

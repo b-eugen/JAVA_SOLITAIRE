@@ -195,7 +195,7 @@ public abstract class Pile {
         {
             System.out.println("Exception: "+e);
         }
-        System.out.println(Card.RED+"Failed to add cards slice starting with "+cards.get(0)+" to pile"+Card.BLACK);
+        System.out.println(Card.RED+"Pile.addSlice Error: Failed to add cards slice starting with "+cards.get(0)+" to pile"+Card.BLACK);
         return false;
     }
 

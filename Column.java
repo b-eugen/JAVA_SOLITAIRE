@@ -165,7 +165,7 @@ public class Column extends Pile{
                 return super.addSlice(cards);
             }
         }
-        System.out.println(Card.RED+"Failed to add cards to column "+ this.number+Card.BLACK);
+        System.out.println(Card.RED+"Column.addSlice Error: Failed to add cards to column "+ this.number+Card.BLACK);
         
         return false;
     }
@@ -195,7 +195,7 @@ public class Column extends Pile{
             Card card = destination.getCard(destination.lenPile()-1);//get top card of the target
             if (card.getValue() == Card.Value.ACE)//if target ends with ace report an error
             {
-                System.out.println(Card.RED+"Failed to move cards from "+this.number+" to "+destination.number + ". You are not allowed to append anything to column with tailing ace"+Card.BLACK);
+                System.out.println(Card.RED+"Column.moveToColumn: Invalid play, failed to move cards from "+this.number+" to "+destination.number + ". You are not allowed to append anything to column with tailing ace"+Card.BLACK);
             }
             else
             {
@@ -222,7 +222,7 @@ public class Column extends Pile{
         else
         {
             //if the move is illegal report an error
-            System.out.println(Card.RED+"Failed to move cards from "+this.number+" to "+destination.number+Card.BLACK);
+            System.out.println(Card.RED+"Column.moveToColumn: Invalid play, failed to move cards from "+this.number+" to "+destination.number+Card.BLACK);
         }
         
         return numberCardsMoved;
@@ -256,7 +256,7 @@ public class Column extends Pile{
                 }
             }
             //report an error
-            System.out.println(Card.RED+"Failed to append a card "+card+" to empty column "+this+Card.BLACK);
+            System.out.println(Card.RED+"Column.addCard: Invalid play, failed to append a card "+card+" to empty column "+this+", can only put a KING into the empty column"+Card.BLACK);
             return false;
             
         }
