@@ -29,15 +29,15 @@ public class SolitaireGame {
             table.printOut();//display the current state of the game
             System.out.println("\nPlease enter your command: ");
             command = in.nextLine();
-            if (command.equals("D")) //user wants to draw a card from the deck
+            if (command.equals("D") || command.equals("d")) //user wants to draw a card from the deck
             {
                 table.getNextCardFromDeck();
             }
-            else if (command.equals("Q")) //user quits the game
+            else if (command.equals("Q") || command.equals("q")) //user quits the game
             {
                 break;
             }
-            else if (command.matches("[1234567DHCSP][1234567DHCS]")) // user wants to move cards
+            else if (command.matches("[1234567DHCSPdhcsp][1234567DHCSdhcs]")) // user wants to move cards
             {
                 table.moveCardsFromInput(command.charAt(0), command.charAt(1));
             }

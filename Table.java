@@ -211,9 +211,10 @@ public class Table {
      */
     public int getPileIndex(char suit)
     {
+        char lowerCase =(char)(suit +'A'-'a');
         for(int ind=0; ind<Card.Suit.values().length; ind++)
         {            
-            if (suitPiles[ind].getBaseSuit().toString().equals(Character.toString(suit)))
+            if (suitPiles[ind].getBaseSuit().toString().equals(Character.toString(suit)) || suitPiles[ind].getBaseSuit().toString().equals(Character.toString(lowerCase)))
             {
                return ind;
             }
@@ -263,7 +264,7 @@ public class Table {
         {
             System.out.println(Card.RED+"Table.moveCards Error: Invalid play, cannot move from suit pile "+suitPiles[sPile1]+ " to "+suitPiles[sPile2]+Card.BLACK);
         }
-        else if (o1 == 'P' && sPile2 != -1)//move from deck to pile
+        else if ((o1 == 'P'|| o1=='p') && sPile2 != -1)//move from deck to pile
         {
             result = moveCards(deck, suitPiles[sPile2]);
             if (result)
@@ -272,7 +273,7 @@ public class Table {
                 score+=DECK_TO_SUITS;
             }
         }
-        else if (o1 == 'P')//move from deck to column
+        else if (o1 == 'P'|| o1=='p')//move from deck to column
         {
             result = moveCards(deck, columns[i2-1]);
             if (result)
