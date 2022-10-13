@@ -18,15 +18,10 @@ public class Table {
 
     public final static int N_COLUMNS = 7;
     
-    public final static int COLUMN_TO_SUITS = 20;
-    public final static int COLUMN_TO_COLUMN = 5;
-    public final static int DECK_TO_SUITS = 10;
 
     private Deck deck;
     private Column[] columns;
     private SuitPile[] suitPiles;
-    private int nMoves;
-    private int score;
 
     /*
     * Default constructor for the class.
@@ -34,9 +29,6 @@ public class Table {
     */
     public Table()
     {
-        //initiate private parameters
-        nMoves = 0;
-        score=0;
         
         columns = new Column[N_COLUMNS];
         int nValues = Card.Value.values().length;
@@ -87,19 +79,11 @@ public class Table {
 
     /*
      * Overrides toSting method, so that it returns the score and the number of moves
-     * @return - String with score and number of moves
+     * @return - "Table"
      */
     public String toString()
     {
-        return String.format("\n_________________ Score: %4d | Number of Moves: %4d________________\n", score, nMoves);
-    }
-
-    /*
-     * Method that increments the number of moves
-     */
-    public void addMove()
-    {
-        nMoves++;
+        return String.format("Table");
     }
 
     /*
@@ -109,9 +93,8 @@ public class Table {
     {
         System.out.println(toString());
 
-        //initiate output array of strings
+        //initiate an exesive output array of empty strings
         int N_ROWS = 256;
-
         String[] output = new String[N_ROWS];
         for(int ind=0; ind<N_ROWS; ind++)
             output[ind] = "";
@@ -176,11 +159,17 @@ public class Table {
         }
 
 
-        //output the table
+        //output the table row-by-row
         for (int ind = 0; ind<output.length; ind++)
         {
             if (output[ind] != "")
+            {
                 System.out.println(output[ind]);
+            }
+            else
+            {
+                break;
+            }
         }
 
 
@@ -197,10 +186,6 @@ public class Table {
         if (!result)
         {
             System.out.println(Card.RED+"Table.getNextCardFromDeck Error: Invalid play, failed to get a card from the deck, length of deck is 0"+Card.BLACK);
-        }
-        else
-        {
-            this.addMove();
         }
         return result;
     }
@@ -231,54 +216,58 @@ public class Table {
      */
     public boolean moveCards(Pile source, Pile destination)
     {
+        boolean result = false;
         if (!source.isEmpty())
         {
             Card card = source.getTopCard();
-            if (destination.addCard(card))
+            if (destination.isLegal(card))
             {
-                source.popTopCard();
-                return true;
+                if (destination.addCard(card))
+                {
+                    source.popTopCard();
+                    result= true;
+                }
             }
         }
         else
         {
             System.out.println(Card.RED+"Table.moveCards Error: Invalid play, failed to get a card from Pile " + source.toString() + " because it is empty"+Card.BLACK);
         }
-        return false;
+        return result;
     }
 
     /*
      * Method that manages the movement of piles given 2 valid char inputs
-     * @param o1 - char source ([1-7] = column number, P = deck, [DHCS]=suit piles (diamonds, hearts, clubs, spades))
-     * @param o2 - char target ([1-7] = column number, [DHCS]=suit piles (diamonds, hearts, clubs, spades))
+     * @param source - char source ([1-7] = column number, P = deck, [DHCS]=suit piles (diamonds, hearts, clubs, spades))
+     * @param destination - char target ([1-7] = column number, [DHCS]=suit piles (diamonds, hearts, clubs, spades))
      * @return true if successful
      */
-    public boolean moveCardsFromInput(char o1, char o2)
+    public int moveCardsFromInput(char source, char destination)
     {
-        int sPile1 = this.getPileIndex(o1);//attempt to get the source suit pile index
-        int sPile2 = this.getPileIndex(o2);//attempt to get the target suit pile index
-        int i1 = o1-'0';//attempt to get the source coloumn index
-        int i2 = o2-'0';//attempt to get the source coloumn index
+        int sPile1 = this.getPileIndex(source);//attempt to get the source suit pile index
+        int sPile2 = this.getPileIndex(destination);//attempt to get the target suit pile index
+        int i1 = source-'0';//attempt to get the source coloumn index
+        int i2 = destination-'0';//attempt to get the source coloumn index
         boolean result = false;
-        if (sPile1 != -1 && sPile2 != -1)//cannot move cards between piles
+        int score = -1;
+        if (sPile1 != -1 && sPile2 != -1)//cannot move cards between suit piles
         {
             System.out.println(Card.RED+"Table.moveCards Error: Invalid play, cannot move from suit pile "+suitPiles[sPile1]+ " to "+suitPiles[sPile2]+Card.BLACK);
         }
-        else if ((o1 == 'P'|| o1=='p') && sPile2 != -1)//move from deck to pile
+        else if ((source == 'P'|| source=='p') && sPile2 != -1)//move from deck to pile
         {
             result = moveCards(deck, suitPiles[sPile2]);
             if (result)
             {
-                this.addMove();
-                score+=DECK_TO_SUITS;
+                score=Player.DECK_TO_SUITS;
             }
         }
-        else if (o1 == 'P'|| o1=='p')//move from deck to column
+        else if (source == 'P'|| source=='p')//move from deck to column
         {
             result = moveCards(deck, columns[i2-1]);
             if (result)
             {
-                this.addMove();
+                score = 0;
             }
         }
         else if(sPile1 != -1)//move from suit pile to column
@@ -286,7 +275,7 @@ public class Table {
             result = moveCards(suitPiles[sPile1], columns[i2-1]);
             if (result)
             {
-                this.addMove();
+                score = 0;
             }
         }
         else if(sPile2 != -1)//move from column to suit pile
@@ -294,8 +283,7 @@ public class Table {
             result= moveCards(columns[i1-1], suitPiles[sPile2]);
             if (result)
             {
-                this.addMove();
-                this.score += COLUMN_TO_SUITS;
+                score = Player.COLUMN_TO_SUITS;
             }            
         }
         else//move cards between columns
@@ -303,12 +291,10 @@ public class Table {
             int num_cards = columns[i1-1].moveToColumn(columns[i2-1]);
             if (num_cards>0)
             {
-                this.addMove();
-                result = true;
-                this.score += COLUMN_TO_COLUMN*num_cards;
+                score = Player.COLUMN_TO_COLUMN*num_cards;
             }
         }
-        return result;
+        return score;
         
     }
 

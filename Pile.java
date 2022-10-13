@@ -60,22 +60,36 @@ public abstract class Pile {
     }
 
     /*
-     * Method, which adds a card to the pile
+     * Method, which returns true if appending card to pile is legal (always true for pile)
+     * @param card - object of class Card to be appended
+     * @return - boolean true
+     */
+    public boolean isLegal(Card card)
+    {
+        return true;
+    }
+
+    /*
+     * Method, which adds a card to the pile if the move is legal
      * @param card – Card to be added
      * @return - boolean true if succesful
      */
     public boolean addCard(Card card)
     {
-        try
+        boolean result=false;
+        if (this.isLegal(card))
         {
-            this.cards.add(card);
-            return true;
-        }  
-        catch (Exception e)
-        {
-            System.out.println("Error Pile.addCard: " + e);
-            return false;
+            try
+            {
+                this.cards.add(card);
+                result= true;
+            }  
+            catch (Exception e)
+            {
+                System.out.println("Error Pile.addCard: " + e);
+            }
         }
+        return result;
     }
 
     /*

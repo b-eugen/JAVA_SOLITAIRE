@@ -140,45 +140,115 @@ public class Column extends Pile{
     }
 
     /*
+     * Method, which returns true if appending card to column is legal
+     * @param card - card to append. if invisible, just append, if visible, make sure that the move is legal
+     * @return boolean -- true if card can be moved or if card is invisble
+     */
+    public boolean isLegal(Card card)
+    {
+        boolean result = false;
+        if (card.isVisible())
+        {
+            if (this.lenPile()>0)//if column is not empty
+            {
+                Card topCard = this.getCard(this.lenPile()-1);
+                //make sure that suits dont match and the value is 1 unit less
+                if (card.isRed() != topCard.isRed() && (topCard.getValue().ordinal()-card.getValue().ordinal()==1))
+                {
+                    result = true;
+                }
+                else //report an error
+                {
+                    System.out.println(Card.RED+"Column.isLegal: Invalid play, failed to append a card "+card+" to empty column "+this+", can only put a card of oposite suit and value reduced by 1"+Card.BLACK);
+                }
+            }
+            else//if column is empty only append king
+            {
+                if (card.getValue() == Card.Value.KING)
+                {
+                    result = true;
+                }
+                else //report an error
+                {
+                    System.out.println(Card.RED+"Column.isLegal: Invalid play, failed to append a card "+card+" to empty column "+this+", can only put a KING into the empty column"+Card.BLACK);
+                }
+            }
+            
+        }
+        else//if card is invisible perform default append
+        {
+            result = true;
+        }
+        return result;
+    }
+
+
+         /*
+     * Method which appends a card to the column
+     * @param card - card to append. if invisible, just append, if visible, make sure that the move is legal
+     * @return boolean - true if successful
+     */
+    public boolean addCard(Card card)
+    {
+        boolean result=false;
+        if (this.isLegal(card))//make sure that the move is legal and add a card
+        {
+            result = super.addCard(card);
+        }
+        return result;
+    }
+
+    /*
+     * Method which pops the top card of the column
+     * @return Card - top card of the column
+     */
+    public Card popTopCard()
+    {
+        if (this.lenPile() > 1)//make next top pile visible
+        {
+            if (this.getCard(this.lenPile()-2).isVisible()==false)
+            {
+                this.getCard(this.lenPile()-2).setVisible();
+            }    
+        }
+        return super.popTopCard();
+    }
+
+
+    /*
      * Method which adds the ArrayList of Card's to the column
      * @param cards - ArrayList to append
      * @return boolean - true if successful
      */
     public boolean addSlice(ArrayList<Card> cards)
     {
+        boolean result = false;
         if (cards.size() > 0)
         {
             Card card0 = cards.get(0);//get the first card
-            int cardLastIndex = this.lenPile()-1;
 
-            //if this column is not empty allow to append cards only if the value of the first card in cards precedes the value of the last value in column and has an opposite color
-            if (cardLastIndex >= 0)
+            if (this.isLegal(card0))//make sure that adding a card is legal
             {
-                Card cardLast = this.getCard(cardLastIndex);
-                if (card0.isRed() != cardLast.isRed() && (cardLast.getValue().ordinal()-card0.getValue().ordinal())==1)
-                {
-                    return super.addSlice(cards);
-                }
-            }
-            else if(card0.getValue() == Card.Value.KING)//if this column is empty allow to append cards, only if they start with a king
-            {
-                return super.addSlice(cards);
+                result = super.addSlice(cards);
             }
         }
-        System.out.println(Card.RED+"Column.addSlice Error: Failed to add cards to column "+ this.number+Card.BLACK);
+        if (!result)
+        {
+            System.out.println(Card.RED+"Column.addSlice Error: Failed to add cards to column "+ this.number+Card.BLACK);
+        }
         
-        return false;
+        return result;
     }
 
+
     /*
-     * Method which automatically moves cards from this column to the input column, if there is a legal move
-     * @param c2 - target column
-     * @return boolean - true if successful
+     * Method which returns the number of cards, which cab be moved from this column to the desitnation column, if there is a legal move
+     * @param destination - target column
+     * @return int - -1, if impossible to make a move, ind of the first card to be moved otherwise
      */
-    public int moveToColumn(Column destination)
+    public int getLegalInd(Column destination)
     {
         int ind = -1;
-        int numberCardsMoved = 0;
         if (destination.isEmpty())//if target is empty, move is legal only if this column has an KING card, which is visible
         {
             for (Card.Suit suit: Card.Suit.values())
@@ -195,7 +265,7 @@ public class Column extends Pile{
             Card card = destination.getCard(destination.lenPile()-1);//get top card of the target
             if (card.getValue() == Card.Value.ACE)//if target ends with ace report an error
             {
-                System.out.println(Card.RED+"Column.moveToColumn: Invalid play, failed to move cards from "+this.number+" to "+destination.number + ". You are not allowed to append anything to column with tailing ace"+Card.BLACK);
+                System.out.println(Card.RED+"Column.getLegalInd: Invalid play, failed to move cards from "+this.number+" to "+destination.number + ". You are not allowed to append anything to column with tailing ace"+Card.BLACK);
             }
             else
             {
@@ -210,6 +280,18 @@ public class Column extends Pile{
                 }
             }
         }
+        return ind;
+    }
+
+    /*
+     * Method which automatically moves cards from this column to the destination column, if there is a legal move
+     * @param destination - target column
+     * @return boolean - true if successful
+     */
+    public int moveToColumn(Column destination)
+    {
+        int ind = this.getLegalInd(destination);
+        int numberCardsMoved = 0;
 
         if (ind != -1)//move cards if ind is not -1
         {
@@ -228,59 +310,4 @@ public class Column extends Pile{
         return numberCardsMoved;
     }
 
-     /*
-     * Method which appends a card to the column
-     * @param card - card to append. if invisible, just append, if visible, make sure that the move is legal
-     * @return boolean - true if successful
-     */
-    public boolean addCard(Card card)
-    {
-        if (card.isVisible())
-        {
-            if (this.lenPile()>0)//if column is not empty
-            {
-                Card topCard = this.getCard(this.lenPile()-1);
-                //make sure that suits dont match and the value is 1 unit less
-                if (card.isRed() != topCard.isRed() && (topCard.getValue().ordinal()-card.getValue().ordinal()==1))
-                {
-                    super.addCard(card);
-                    return true;
-                }
-            }
-            else//if column is empty only append king
-            {
-                if (card.getValue() == Card.Value.KING)
-                {
-                    super.addCard(card);
-                    return true;
-                }
-            }
-            //report an error
-            System.out.println(Card.RED+"Column.addCard: Invalid play, failed to append a card "+card+" to empty column "+this+", can only put a KING into the empty column"+Card.BLACK);
-            return false;
-            
-        }
-        else//if card is invisible perform default append
-        {
-            super.addCard(card);
-            return true;
-        }
-    }
-
-    /*
-     * Method which pops the top card of the column
-     * @return Card - top card of the column
-     */
-    public Card popTopCard()
-    {
-        if (this.lenPile() > 1)
-        {
-            if (this.getCard(this.lenPile()-2).isVisible()==false)
-            {
-                this.getCard(this.lenPile()-2).setVisible();
-            }
-            
-        }
-        return super.popTopCard();
-    }
 }

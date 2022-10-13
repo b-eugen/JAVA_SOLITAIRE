@@ -38,7 +38,22 @@ public class Card {
     /*
     * A {@code Suit} enum object represents a card suit
     */
-    public enum Suit {D, H, C, S};
+    public enum Suit {D("♦"), H("♥"), C("♣"), S("♠");
+                     private String symbol;
+                     private Suit(String symbol)
+                     {
+                        this.symbol = symbol;
+                     }
+
+                    /*
+                    * Returns the symbol representation of enum
+                    * @return name
+                    */
+                     public String getSuitSymbol()
+                     {
+                        return this.symbol;
+                     }
+                    };
 
     public static final String BLACK = "\033[0m";//black unicode color
 	public static final String RED = "\033[0;31m";//red unicode color
@@ -203,7 +218,7 @@ public class Card {
     {
         if (this.isVisible)
         {
-            return new String[] {"--------- ", String.format("|%s%2s%s%s    | ", this.getColor(), this.value.toString(), this.suit, BLACK)};
+            return new String[] {"--------- ", String.format("|%s%2s%s%s    | ", this.getColor(), this.value.toString(), this.suit.getSuitSymbol(), BLACK)};
         }
         else
         {
@@ -271,7 +286,7 @@ public class Card {
     public String[] stringCardToken()
     {
         String color= this.getColor();
-        return Card.concatStringArrays(new String[] {String.format("%s%s%s         ",color, this.suit, Card.BLACK), "--------- ", String.format("|%s%s%s      | ",color, this.suit, Card.BLACK)}, this.stringCardBody());
+        return Card.concatStringArrays(new String[] {String.format("%s%s%s         ",color, this.suit, Card.BLACK), "--------- ", String.format("|%s%s%s      | ",color, this.suit.getSuitSymbol(), Card.BLACK)}, this.stringCardBody());
     }
 
     /*

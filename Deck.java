@@ -55,19 +55,36 @@ public class Deck extends Pile{
     }
 
     /*
+     * Method, which returns true if appending card to pile is legal (true if card is invisible)
+     * @param card - object of class Card to be appended
+     * @return boolean -- true if card is invisble
+     */
+    public boolean isLegal(Card card)
+    {
+        if(!card.isVisible())
+        {
+            System.out.println(Card.RED+"Deck.isLegal: Invalid play, failed to append a card "+card+" to deck"+Card.BLACK);
+        }
+        return !card.isVisible();
+    }
+
+    /*
      * Method which adds a card to the deck
      * @parameter card – Card to add
      * @return true if successful
      */
     public boolean addCard(Card card)
     {
-        boolean result = super.addCard(card);
-        if (result)
+        boolean result=false;
+        if (this.isLegal(card))
         {
-            currentCard++;
-            return true;
+            result = super.addCard(card);
+            if (result)
+            {
+                currentCard++;
+            }
         }
-        return false;
+        return result;
     }
 
     /*

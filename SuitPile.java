@@ -52,39 +52,51 @@ public class SuitPile extends Pile{
     }
 
     /*
+     * Method, which returns true if appending card to SuitPile is legal
+     * @param card - card to append.
+     * @return boolean -- true if card can be moved to suitpile
+     */
+    public boolean isLegal(Card card)
+    {
+        boolean result=false;
+
+        if (card.getSuit() != baseSuit)//error if base suit is wrong
+        {
+            System.out.println(Card.RED+"SuitPile.isLegal Error: Failed to put "+card+" in the suit pile "+this+", Suits dont match"+Card.BLACK);
+        }
+        else if (this.isEmpty() && card.getValue()!=Card.Value.ACE)//error if trying to append not ACE to empty SuitPile
+        {
+            System.out.println(Card.RED+"SuitPile.isLegal Error: Failed to add non-ace card "+card+" into "+this+" pile"+Card.BLACK);
+        }
+        else if (this.isEmpty() && card.getValue()==Card.Value.ACE)//success if trying to append an ace to the empty pile
+        {
+            result = true;
+        }
+        else if ((this.isEmpty()==false) && (card.getValue().ordinal() - this.getCard(this.lenPile()-1).getValue().ordinal())==1)//success if trying to append the right suit, and card with value greater by one unit than top card
+        {
+            result = true;
+        }
+        else
+        {
+            System.out.println(Card.RED+"SuitPile.isLegal Error: Failed to add card "+card+" into "+this+" pile because the last card is "+this.getCard(this.lenPile()-1)+Card.BLACK);
+        }
+
+        return result;
+    }
+
+    /*
      * Method that adds a card to the SuitPile
      * @param card - Card to be added
      * @return - boolean true if successful
      */
     public boolean addCard(Card card)
     {
-        if (card.getSuit() != baseSuit)//error if base suit is wrong
+        boolean result=false;
+        if (this.isLegal(card))
         {
-            System.out.println(Card.RED+"SuitPile.addCard Error: Failed to put "+card+" in the suit pile "+this+", Suits dont match"+Card.BLACK);
-            return false;
+            result = super.addCard(card);
         }
-        else if (this.isEmpty() && card.getValue()!=Card.Value.ACE)//error if trying to append not ACE to empty SuitPile
-        {
-            System.out.println(Card.RED+"SuitPile.addCard Error: Failed to add non-ace card "+card+" into "+this+" pile"+Card.BLACK);
-            return false;
-        }
-        else if (this.isEmpty() && card.getValue()==Card.Value.ACE)//success if trying to append an ace to the empty pile
-        {
-            card.setVisible();
-            super.addCard(card);
-            return true;
-        }
-        else if ((this.isEmpty()==false) && (card.getValue().ordinal() - this.getCard(this.lenPile()-1).getValue().ordinal())==1)//success if trying to append the right suit, and card with value greater by one unit than top card
-        {
-            card.setVisible();
-            super.addCard(card);
-            return true;
-        }
-        else
-        {
-            System.out.println(Card.RED+"SuitPile.addCard Error: Failed to add card "+card+" into "+this+" pile because the last card is "+this.getCard(this.lenPile()-1)+Card.BLACK);
-            return false;
-        }
+        return result;
     }
 
     

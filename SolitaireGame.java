@@ -21,17 +21,25 @@ public class SolitaireGame {
         Table table = new Table();//initialise Solitaire table
  
         String command;
+        System.out.println("Please enter your name or hit enter to use default:");
+        command = in.nextLine();
+        Player player = new Player(command);
+
 
         //loop which asks for user input and parses it into action
-        outerloop:
         while (true)
         {
+            System.out.println(player);
             table.printOut();//display the current state of the game
+
             System.out.println("\nPlease enter your command: ");
             command = in.nextLine();
             if (command.equals("D") || command.equals("d")) //user wants to draw a card from the deck
             {
-                table.getNextCardFromDeck();
+                if (table.getNextCardFromDeck())
+                {
+                    player.addMove();
+                }
             }
             else if (command.equals("Q") || command.equals("q")) //user quits the game
             {
@@ -39,7 +47,12 @@ public class SolitaireGame {
             }
             else if (command.matches("[1234567DHCSPdhcsp][1234567DHCSdhcs]")) // user wants to move cards
             {
-                table.moveCardsFromInput(command.charAt(0), command.charAt(1));
+                int score = table.moveCardsFromInput(command.charAt(0), command.charAt(1));
+                if (score>=0)
+                {
+                    player.addMove();
+                    player.incrementScore(score);
+                }
             }
             else //invalid command
             {
